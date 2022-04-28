@@ -5,7 +5,10 @@ import os
 
 # import config_dose_entries as conf
 # import config_dose_entries_archive as conf
-import config_invoices as conf
+# import config_invoices as conf
+# import config_company_file as conf
+# import config_company_alias as conf
+import config_dan_davky as conf
 
 
 ######
@@ -27,7 +30,7 @@ for file in Tools.find_files(f'{conf.inbox}/*.xlsx'):
 	r = 0
 	success_counter = 0
 	empty_rows_counter = 0
-	while True:
+	for row in ws.iter_rows(min_row = (conf.skip + 1 if conf.skip else 1)):
 		#
 		# Init
 		#
@@ -38,6 +41,7 @@ for file in Tools.find_files(f'{conf.inbox}/*.xlsx'):
 		#
 		entry = {}
 		for name, column in conf.columns.items():
+			# Prepare column letter and callback
 			if not column:
 				continue
 			elif type(column).__name__ == 'str':
@@ -47,10 +51,16 @@ for file in Tools.find_files(f'{conf.inbox}/*.xlsx'):
 				column_letter = column[0]
 				column_callback = column[1]
 
-			v = ws.cell(r, Tools.col_num(column_letter)).value
-			v = column_callback(v)
-			if v:
-				entry[name] = column_callback(v)
+			# Get value
+			v = row[Tools.col_num(column_letter)-1].value
+
+			if column_callback.__code__.co_argcount == 1:
+				v = column_callback(v)
+			if column_callback.__code__.co_argcount == 2:
+				v = column_callback(v, row)
+
+			if v is not None:
+				entry[name] = v
 
 		#
 		# Skips & Checks
