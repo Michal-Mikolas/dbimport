@@ -27,10 +27,10 @@ for file in Tools.find_files(f'{conf.inbox}/*.xlsx'):
 	wb = openpyxl.load_workbook(file)
 	ws = wb.active
 
-	r = 0
+	r = conf.skip + 1 if (type(conf.skip) is int) else 1
 	success_counter = 0
 	empty_rows_counter = 0
-	for row in ws.iter_rows(min_row = (conf.skip + 1 if conf.skip else 1)):
+	for row in ws.iter_rows(min_row=r):
 		#
 		# Init
 		#
@@ -75,9 +75,9 @@ for file in Tools.find_files(f'{conf.inbox}/*.xlsx'):
 		if empty_rows_counter >= conf.max_empty_rows:
 			break
 
-		if (type(conf.skip) == int) and (r <= conf.skip):
-			continue
+		# Skip first rows
 		if (type(conf.skip).__name__ == 'function') and (conf.skip(entry)):
+			empty_rows_counter += 1
 			continue
 
 		#
