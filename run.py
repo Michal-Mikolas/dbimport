@@ -70,6 +70,7 @@ for file in Tools.find_files(f'{conf.inbox}/*.xlsx'):
 			if not entry.get(column):
 				check = False
 				empty_rows_counter += 1
+				break
 
 		if empty_rows_counter >= conf.max_empty_rows:
 			break
