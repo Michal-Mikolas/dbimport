@@ -27,6 +27,8 @@ for file in Tools.find_files(f'{conf.inbox}/*.xlsx'):
 	wb = openpyxl.load_workbook(file)
 	ws = wb.active
 
+	db.begin()
+
 	r = conf.skip + 1 if (type(conf.skip) is int) else 1
 	success_counter = 0
 	empty_rows_counter = 0
@@ -86,6 +88,8 @@ for file in Tools.find_files(f'{conf.inbox}/*.xlsx'):
 		if check:
 			db[conf.table].upsert(entry, conf.identifiers)
 			success_counter += 1
+
+	db.commit()
 
 	outbox_path = f'{conf.outbox}/{Tools.remove_dirs(file)}'
 	os.unlink(outbox_path) if os.path.isfile(outbox_path) else None
