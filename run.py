@@ -8,7 +8,18 @@ import os
 # import config_invoices as conf
 # import config_company_file as conf
 # import config_company_alias as conf
-import config_dan_davky as conf
+# import config_dan_davky as conf
+# import config_kontrola_ksrzis_ad as conf   # input from ZZ
+# import config_kontrola_ksrzis_ad2 as conf  # input from "done"
+# import config_kontrola_ksrzis_adaf as conf
+# import config_kontrola_ksrzis_aeag as conf
+# import config_kontrola_ksrzis_aiak as conf   # output from ZZ
+# import config_kontrola_ksrzis_aiak2 as conf  # output from "done"
+# import config_kontrola_ksrzis_ajal as conf
+# import config_kontrola_ksrzis_akam as conf
+# import config_kontrola_ksrzis_doklady as conf
+# import config_kontrola_ksrzis_999 as conf  # rewrite insurance to 999
+import config_kontrolni_zprava_vzp as conf
 
 
 ######
@@ -23,6 +34,7 @@ db = dataset.connect(conf.db)
 
 for file in Tools.find_files(f'{conf.inbox}/*.xlsx'):
 	Tools.log(file)
+	conf.file = os.path.split(file)[1]
 
 	wb = openpyxl.load_workbook(file)
 	ws = wb.active
@@ -54,8 +66,13 @@ for file in Tools.find_files(f'{conf.inbox}/*.xlsx'):
 				column_callback = column[1]
 
 			# Get value
-			v = row[Tools.col_num(column_letter)-1].value
+			try:
+				v = row[Tools.col_num(column_letter)-1].value
+			except IndexError:
+				v = None
 
+			if column_callback.__code__.co_argcount == 0:
+				v = column_callback()
 			if column_callback.__code__.co_argcount == 1:
 				v = column_callback(v)
 			if column_callback.__code__.co_argcount == 2:
