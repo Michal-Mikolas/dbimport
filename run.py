@@ -19,8 +19,8 @@ import os
 # import config_kontrola_ksrzis_akam as conf
 # import config_kontrola_ksrzis_doklady as conf
 # import config_kontrola_ksrzis_999 as conf  # rewrite insurance to 999
-import config_kontrolni_zprava_vzp as conf
-
+# import config_kontrolni_zprava_vzp as conf       # VZP input
+import config_kontrolni_zprava_vzp_arat as conf  # VZP output
 
 ######
 #     # #    # #    #
