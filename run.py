@@ -20,7 +20,9 @@ import os
 # import config_kontrola_ksrzis_doklady as conf
 # import config_kontrola_ksrzis_999 as conf  # rewrite insurance to 999
 # import config_kontrolni_zprava_vzp as conf       # VZP input
-import config_kontrolni_zprava_vzp_arat as conf  # VZP output
+# import config_kontrolni_zprava_vzp_arat as conf  # VZP output
+# import config_kontrola_ksrzis as conf
+import config_uznane_vykony_vzp as conf
 
 ######
 #     # #    # #    #
@@ -103,7 +105,20 @@ for file in Tools.find_files(f'{conf.inbox}/*.xlsx'):
 		# Save to DB
 		#
 		if check:
-			db[conf.table].upsert(entry, conf.identifiers)
+			inserted_id = db[conf.table].upsert(entry, conf.identifiers)  # returns True for update, ID for insert
+
+			#~~~~~~ Values after insert (aka `created_at` column)
+			if (type(inserted_id) == int):
+				try:
+					values = {'id': inserted_id}
+					for column, value in conf.after_insert.items():
+						values[column] = value() if (type(value).__name__ == 'function') else value
+
+					db[conf.table].update(values, ['id'])
+				except AttributeError:
+					pass
+			#~~~~~~/
+
 			success_counter += 1
 
 	db.commit()
