@@ -22,7 +22,10 @@ import os
 # import config_kontrolni_zprava_vzp as conf       # VZP input
 # import config_kontrolni_zprava_vzp_arat as conf  # VZP output
 # import config_kontrola_ksrzis as conf
-import config_uznane_vykony_vzp as conf
+# import config_kontrola_ksrzis_asau as conf
+# import config_uznane_vykony_vzp as conf
+# import config_nevykazane_vykony as conf
+import config_vykazano_205 as conf
 
 ######
 #     # #    # #    #
