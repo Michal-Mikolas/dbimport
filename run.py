@@ -41,7 +41,7 @@ for file in Tools.find_files(f'{conf.inbox}/*.xlsx'):
 	Tools.log(file)
 	conf.file = os.path.split(file)[1]
 
-	wb = openpyxl.load_workbook(file)
+	wb = openpyxl.load_workbook(file, read_only=True)
 	ws = wb.active
 
 	db.begin()
@@ -125,9 +125,10 @@ for file in Tools.find_files(f'{conf.inbox}/*.xlsx'):
 			success_counter += 1
 
 		#~~~~~~ Chunks
-		if conf.get('chunk'):
+		if 'chunk' in dir(conf):
 			if r % conf.chunk == 0:
 				db.commit()
+				Tools.log('- {:,d} rows done'.format(r).replace(',', ' '))
 				db.begin()
 		#~~~~~~/
 
