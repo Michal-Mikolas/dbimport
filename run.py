@@ -124,6 +124,13 @@ for file in Tools.find_files(f'{conf.inbox}/*.xlsx'):
 
 			success_counter += 1
 
+		#~~~~~~ Chunks
+		if conf.get('chunk'):
+			if r % conf.chunk == 0:
+				db.commit()
+				db.begin()
+		#~~~~~~/
+
 	db.commit()
 
 	outbox_path = f'{conf.outbox}/{Tools.remove_dirs(file)}'
