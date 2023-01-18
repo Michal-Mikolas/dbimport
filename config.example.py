@@ -27,6 +27,7 @@ outbox = 'outbox'
 db = 'postgresql://user:pass@server:5432/database'
 table = 'invoices'
 skip = 1
+chunk = 10*1000  # after how many rows transaction will be commited to DB
 columns = {
 	'date_from': 'A',
 	'date_to': 'B',

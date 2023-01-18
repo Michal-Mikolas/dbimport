@@ -23,9 +23,9 @@ import os
 # import config_kontrolni_zprava_vzp_arat as conf  # VZP output
 # import config_kontrola_ksrzis as conf
 # import config_kontrola_ksrzis_asau as conf
-# import config_uznane_vykony_vzp as conf
+import config_uznane_vykony_vzp as conf
 # import config_nevykazane_vykony as conf
-import config_vykazano_205 as conf
+# import config_vykazano_205 as conf
 
 ######
 #     # #    # #    #
@@ -125,7 +125,7 @@ for file in Tools.find_files(f'{conf.inbox}/*.xlsx'):
 			success_counter += 1
 
 		#~~~~~~ Chunks
-		if conf.get('chunk'):
+		if 'chunk' in dir(conf):
 			if r % conf.chunk == 0:
 				db.commit()
 				db.begin()
