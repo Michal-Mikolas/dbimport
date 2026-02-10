@@ -3,29 +3,35 @@ import openpyxl
 from tools import Tools
 import os
 
-# import config_dose_entries as conf
-# import config_dose_entries_archive as conf
-# import config_invoices as conf
-# import config_company_file as conf
-# import config_company_alias as conf
-# import config_dan_davky as conf
-# import config_kontrola_ksrzis_ad as conf   # input from ZZ
-# import config_kontrola_ksrzis_ad2 as conf  # input from "done"
-# import config_kontrola_ksrzis_adaf as conf
-# import config_kontrola_ksrzis_aeag as conf
-# import config_kontrola_ksrzis_aiak as conf   # output from ZZ
-# import config_kontrola_ksrzis_aiak2 as conf  # output from "done"
-# import config_kontrola_ksrzis_ajal as conf
-# import config_kontrola_ksrzis_akam as conf
-# import config_kontrola_ksrzis_doklady as conf
-# import config_kontrola_ksrzis_999 as conf  # rewrite insurance to 999
-# import config_kontrolni_zprava_vzp as conf       # VZP input
-# import config_kontrolni_zprava_vzp_arat as conf  # VZP output
-# import config_kontrola_ksrzis as conf
-# import config_kontrola_ksrzis_asau as conf
-import config_uznane_vykony_vzp as conf
-# import config_nevykazane_vykony as conf
-# import config_vykazano_205 as conf
+#~~~~~~ Import config file
+import sys
+import importlib.util
+import argparse
+
+# Parse arguments
+parser = argparse.ArgumentParser(description='Import xlsx to DB defined in config file.')
+parser.add_argument('config', help='Path to configuration file')
+args = parser.parse_args()
+
+# Load config
+config_file = args.config
+if not os.path.isfile(config_file) and os.path.isfile(config_file + '.py'):
+	config_file += '.py'
+
+if not os.path.isfile(config_file):
+	print(f"Error: Config file '{args.config}' not found.")
+	sys.exit(1)
+
+# Import config file
+spec = importlib.util.spec_from_file_location("conf", config_file)
+conf = importlib.util.module_from_spec(spec)
+try:
+	spec.loader.exec_module(conf)
+except Exception as e:
+	print(f"Error loading config file '{config_file}': {e}")
+	sys.exit(1)
+#~~~~~~/
+
 
 ######
 #     # #    # #    #
